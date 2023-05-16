@@ -2,7 +2,7 @@ const { createToken } = require('../auth/authFunctions');
 const { User } = require('../models');
 const { createUserVerifications } = require('./validations/userVerifications');
 
-const getById = async (id) => User.findByPk(id);
+const getById = async (id) => User.findByPk(id, { attributes: { exclude: 'password ' } });
 
 const getUsers = async () => User.findAll({ attributes: { exclude: 'password ' } });
 
