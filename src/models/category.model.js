@@ -9,13 +9,9 @@ const CategoriesModel = (sequelize, DataTypes) => {
     image: DataTypes.STRING,
   },
   {
-    tableName: 'categories'
+    tableName: 'categories',
+    timestamps: false,
   });
-
-  (async () => {
-    await sequelize.sync({ force: true });
-    // As funções vão aqui
-  })();
 
   return Category;
 };

@@ -6,17 +6,18 @@ const blogPostModel = (sequelize, DataTypes) => {
     userId: { type: DataTypes.INTEGER, foreignKey: true },
     published: DataTypes.DATE,
     updated: DataTypes.DATE,
-  });
+  },
+  {
+    underscored: true,
+    tablename: 'blog_posts',
+    timestamps: false,
+  }
+  );
 
   BlogPost.associate = (models) => {
-    BlogPost.belogsTo(models.User,
+    BlogPost.belongsTo(models.User,
       { foreignKey: 'userId', as: 'users'});
   };
-
-  (async () => {
-    await sequelize.sync({ force: true });
-    // As funções vão aqui
-  })();
 
   return BlogPost;
 };
