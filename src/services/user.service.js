@@ -1,6 +1,6 @@
 const { createToken } = require('../auth/authFunctions');
 const { User } = require('../models');
-const { createUserVerifications } = require('./validations/userVerifications');
+const { createUservalidations } = require('./validations/userValidations');
 
 const getById = async (id) => User.findByPk(id, { attributes: { exclude: 'password ' } });
 
@@ -11,7 +11,7 @@ const getByEmail = async (email) => User.findOne({ where: { email } });
 const createUser = async (user) => {
   const { displayName, email, password, image } = user;
 
-  const error = await createUserVerifications(user);
+  const error = await createUservalidations(user);
   if (error.type) return error;
 
   const emailExists = await getByEmail(email);

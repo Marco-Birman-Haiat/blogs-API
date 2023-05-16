@@ -7,6 +7,11 @@ const userCreateSchema = Joi.object({
   image: Joi.string(),
 });
 
+const categoryCreateSchema = Joi.object({
+  name: Joi.required(),
+});
+
 module.exports = {
   userCreateSchema,
+  categoryCreateSchema,
 };
