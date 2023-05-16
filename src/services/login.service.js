@@ -10,8 +10,7 @@ const loginVerify = async (loginData) => {
     return { type: 400, message: 'Invalid fields' };
   }
 
-  const { password: _password, userWithoutPassword } = user.dataValues;
-  const token = createToken(userWithoutPassword);
+  const token = createToken({ email: user.dataValues.email });
 
   return { type: null, message: token };
 };

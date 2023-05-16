@@ -2,10 +2,9 @@ const { createToken } = require('../auth/authFunctions');
 const { User } = require('../models');
 const { createUserVerifications } = require('./validations/userVerifications');
 
-const getById = async (id) => {
-  const user = await User.findByPk(id);
-  return user;
-};
+const getById = async (id) => User.findByPk(id);
+
+const getUsers = async () => User.findAll({ attributes: { exclude: 'password ' } });
 
 const getByEmail = async (email) => User.findOne({ where: { email } });
 
@@ -27,4 +26,5 @@ module.exports = {
   getById,
   createUser,
   getByEmail,
+  getUsers,
 };
