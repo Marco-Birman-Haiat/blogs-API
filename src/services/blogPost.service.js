@@ -22,6 +22,18 @@ const getPosts = async () =>
     ],
   });
 
+const getPostById = async (id) =>
+  BlogPost.findByPk(
+    id,
+    {
+      attributes: { exclude: ['true'] },
+      include: [
+        { model: User, as: 'user', attributes: { exclude: ['password'] } },
+        { model: Category, as: 'categories' },
+      ],
+    },
+  );
+
 const createPost = async (post) => {
   const { title, content, categoryIds, email } = post;
   const error = await postCreateValidation(post);
@@ -42,4 +54,5 @@ const createPost = async (post) => {
 module.exports = {
   createPost,
   getPosts,
+  getPostById,
 };
