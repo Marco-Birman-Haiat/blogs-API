@@ -1,5 +1,5 @@
 const { BlogPost, sequelize, PostCategory, User, Category } = require('../models');
-const { postCreateValidation } = require('./validations/postValidations');
+const { postCreateValidation, updatePostValidation } = require('./validations/postValidations');
 
 const executeCreatePostTransaction = async (postData, categoryIds) => {
   const result = await sequelize.transaction(async (t) => {
@@ -34,6 +34,21 @@ const getPostById = async (id) =>
     },
   );
 
+const updatePost = async (userEmail, postData) => {
+  const error = await updatePostValidation(userEmail, postData);
+  if (error.type) return error;
+
+  const { id, title, content } = postData;
+  const valuesToUpdate = { title, content };
+  await BlogPost.update(valuesToUpdate, { where: { id } });
+
+  const updatedPost = await BlogPost.findByPk(id, { 
+    attributes: { exclude: ['true'] },
+    include: [{ model: Category, as: 'categories' }],
+  });
+  return { type: null, message: updatedPost };
+};
+
 const createPost = async (post) => {
   const { title, content, categoryIds, email } = post;
   const error = await postCreateValidation(post);
@@ -55,4 +70,5 @@ module.exports = {
   createPost,
   getPosts,
   getPostById,
+  updatePost,
 };
