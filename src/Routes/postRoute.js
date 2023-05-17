@@ -8,5 +8,6 @@ postRouter.post('/', validateJWT, blogPostController.createPost);
 postRouter.get('/', validateJWT, blogPostController.getPosts);
 postRouter.get('/:id', validateJWT, blogPostController.getPostById);
 postRouter.put('/:id', validateJWT, blogPostController.updatePost);
+postRouter.delete('/:id', validateJWT, blogPostController.deletePost);
 
 module.exports = postRouter;

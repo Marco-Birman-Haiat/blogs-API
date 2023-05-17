@@ -30,7 +30,22 @@ const updatePostValidation = async (userEmail, postData) => {
   return { type: null, message: '' };
 };
 
+const postDeleteValidation = async (postId, userEmail) => {
+  const post = await BlogPost.findByPk(postId, {
+    attributes: { exclude: ['true'] },
+    include: [
+      { model: User, as: 'user' },
+    ],
+   });
+  
+  if (!post) return { type: 404, message: 'Post does not exist' };
+  if (userEmail !== post.user.email) return { type: 401, message: 'Unauthorized user' };
+
+  return { type: null, mesage: '' };
+};
+
 module.exports = {
   postCreateValidation,
   updatePostValidation,
+  postDeleteValidation,
 };

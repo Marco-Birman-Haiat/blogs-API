@@ -1,5 +1,5 @@
 const { BlogPost, sequelize, PostCategory, User, Category } = require('../models');
-const { postCreateValidation, updatePostValidation } = require('./validations/postValidations');
+const { postCreateValidation, updatePostValidation, postDeleteValidation } = require('./validations/postValidations');
 
 const executeCreatePostTransaction = async (postData, categoryIds) => {
   const result = await sequelize.transaction(async (t) => {
@@ -66,9 +66,18 @@ const createPost = async (post) => {
   return { type: null, message: createPostTransaction };
 };
 
+const deletePost = async (postId, userEmail) => {
+  const error = await postDeleteValidation(postId, userEmail);
+  if (error.type) return error;
+
+  const result = await BlogPost.destroy({ where: { id: postId } });
+  return { type: null, message: result };
+};
+
 module.exports = {
   createPost,
   getPosts,
   getPostById,
   updatePost,
+  deletePost,
 };
