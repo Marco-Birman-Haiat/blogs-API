@@ -7,6 +7,18 @@ const createUservalidations = async (newUser) => {
   return { type: null, message: '' };
 };
 
+// const checkUserIdEmailMatch = async (user) => {
+//   const { id, email } = user;
+//   const userDbId = await User.findOne({ where: { email }, include: ['id'] });
+//   if (id === userDbId) return true;
+// };
+
+// const deleteUserValidation = async (user) => {
+//   const userMatchError = await checkUserIdEmailMatch(user);
+//   if (!userMatchError) return { type: 401, message: 'Unauthorized user' };
+//   return { type: null, message: '' };
+// };
+
 module.exports = {
   createUservalidations,
 };

@@ -22,9 +22,17 @@ const createUser = async (user) => {
   return { type: null, message: token };
 };
 
+const deleteUser = async (tokenData) => {
+  const user = await User.findOne({ where: { email: tokenData.email } });
+
+  await User.destroy({ where: { id: user.id } });
+  return { type: null, message: '' };
+};
+
 module.exports = {
   getById,
   createUser,
   getByEmail,
   getUsers,
+  deleteUser,
 };

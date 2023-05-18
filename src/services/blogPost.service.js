@@ -1,5 +1,7 @@
+const { Op } = require('sequelize');
 const { BlogPost, sequelize, PostCategory, User, Category } = require('../models');
-const { postCreateValidation, updatePostValidation, postDeleteValidation } = require('./validations/postValidations');
+const { postCreateValidation, updatePostValidation,
+  postDeleteValidation } = require('./validations/postValidations');
 
 const executeCreatePostTransaction = async (postData, categoryIds) => {
   const result = await sequelize.transaction(async (t) => {
@@ -33,6 +35,22 @@ const getPostById = async (id) =>
       ],
     },
   );
+
+const searchPosts = async (searchTerm) => {
+  const foundPosts = await BlogPost.findAll({
+    include: [
+      { model: User, as: 'user' },
+      { model: Category, as: 'categories' },
+    ],
+    where: {
+      [Op.or]: [
+        { title: { [Op.like]: `%${searchTerm}%` } },
+        { content: { [Op.like]: `%${searchTerm}%` } },
+      ],
+    },
+  });
+  return { type: null, message: foundPosts };
+};
 
 const updatePost = async (userEmail, postData) => {
   const error = await updatePostValidation(userEmail, postData);
@@ -80,4 +98,5 @@ module.exports = {
   getPostById,
   updatePost,
   deletePost,
+  searchPosts,
 };
