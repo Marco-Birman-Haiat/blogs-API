@@ -2,6 +2,7 @@ const { Op } = require('sequelize');
 const { BlogPost, sequelize, PostCategory, User, Category } = require('../models');
 const { postCreateValidation, updatePostValidation,
   postDeleteValidation } = require('./validations/postValidations');
+const { userView } = require('../views');
 
 const executeCreatePostTransaction = async (postData, categoryIds) => {
   const result = await sequelize.transaction(async (t) => {
@@ -39,8 +40,8 @@ const getPostById = async (id) =>
 const searchPosts = async (searchTerm) => {
   const foundPosts = await BlogPost.findAll({
     include: [
-      { model: User, as: 'user' },
-      { model: Category, as: 'categories' },
+      { model: User, as: 'user', attributes: { exclude: ['password'] } },
+      { model: Category, as: 'categories', attributes: { exclude: ['postId', 'categoryId'] } },
     ],
     where: {
       [Op.or]: [
@@ -48,6 +49,7 @@ const searchPosts = async (searchTerm) => {
         { content: { [Op.like]: `%${searchTerm}%` } },
       ],
     },
+    attributes: { exclude: ['true'] },
   });
   return { type: null, message: foundPosts };
 };
@@ -69,13 +71,10 @@ const updatePost = async (userEmail, postData) => {
 
 const createPost = async (post) => {
   const { title, content, categoryIds, email } = post;
-  const error = await postCreateValidation(post);
+  const error = await createPostValidations(post);
   if (error.type) return error;
   
-  const author = await User
-    .findOne({ where: { email }, attributes: ['id'] });
-
-  const userId = author.dataValues.id;
+  const userId = userView.getByEmail(email).then((user) => user.email);
   
   const postData = { title, content, userId, published: new Date(), updated: new Date() };
 

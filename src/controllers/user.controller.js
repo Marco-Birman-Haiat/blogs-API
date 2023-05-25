@@ -10,17 +10,17 @@ const createUser = async (req, res) => {
 };
 
 const getUsers = async (_req, res) => {
-  const users = await userService.getUsers();
-  return res.status(200).json(users);
+  const allUsers = await userService.getUsers();
+  return res.status(200).json(allUsers.message);
 };
 
 const getById = async (req, res) => {
   const { id } = req.params;
-  const user = await userService.getById(id);
 
-  if (!user) return res.status(404).json({ message: 'User does not exist' });
+  const result = await userService.getById(id);
+  if (result.type) return res.status(result.type).json({ message: result.message });
 
-  return res.status(200).json(user);
+  return res.status(200).json(result.message);
 };
 
 const deleteUser = async (req, res) => {

@@ -1,31 +1,41 @@
 const { createToken } = require('../auth/authFunctions');
-const { User } = require('../models');
+const { userView } = require('../views');
 const { createUservalidations } = require('./validations/userValidations');
 
-const getById = async (id) => User.findByPk(id, { attributes: { exclude: 'password ' } });
+const getById = async (id) => {
+  const EXCLUDE_ATTRIBUTE = 'password';
+  const foundUser = await userView.getById(id, EXCLUDE_ATTRIBUTE);
 
-const getUsers = async () => User.findAll({ attributes: { exclude: 'password ' } });
+  if (!foundUser) return { type: 404, message: 'User does not exist' };
+  return { type: null, message: foundUser };
+};
 
-const getByEmail = async (email) => User.findOne({ where: { email } });
+const getUsers = async () => {
+  const EXCLUDE_ATTRIBUTE = 'password';
+  const allUsers = await userView.getAll(EXCLUDE_ATTRIBUTE);
+
+  return { type: null, message: allUsers };
+};
+
+const getByEmail = async (email) => {
+  const foundUser = await userView.getByEmail(email);
+  return { type: null, message: foundUser };
+};
 
 const createUser = async (user) => {
-  const { displayName, email, password, image } = user;
-
   const error = await createUservalidations(user);
   if (error.type) return error;
 
-  const emailExists = await getByEmail(email);
-  if (emailExists) return { type: 409, message: 'User already registered' };
-
-  const newUser = await User.create({ displayName, email, password, image });
+  const newUser = await userView.create(user);
   const token = createToken({ email: newUser.email });
+
   return { type: null, message: token };
 };
 
 const deleteUser = async (tokenData) => {
-  const user = await User.findOne({ where: { email: tokenData.email } });
+  const user = await userView.getByEmail(tokenData.email);
 
-  await User.destroy({ where: { id: user.id } });
+  await userView.deleteUser(user.id);
   return { type: null, message: '' };
 };
 
