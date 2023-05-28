@@ -1,6 +1,6 @@
 // const { categoryCreateSchema } = require('./schemas');
 
-const { Category } = require('../../models');
+const { Category } = require('../../database/models');
 
 const categoryCreateValidation = (category) => {
   // const { error } = categoryCreateSchema.validate(category);

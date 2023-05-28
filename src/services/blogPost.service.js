@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const { BlogPost, sequelize, PostCategory, User, Category } = require('../models');
+const { BlogPost, sequelize, PostCategory, User, Category } = require('../database/models');
 const { postCreateValidation, updatePostValidation,
   postDeleteValidation } = require('./validations/postValidations');
 const { userView } = require('../views');
@@ -71,7 +71,7 @@ const updatePost = async (userEmail, postData) => {
 
 const createPost = async (post) => {
   const { title, content, categoryIds, email } = post;
-  const error = await createPostValidations(post);
+  const error = await postCreateValidation(post);
   if (error.type) return error;
   
   const userId = userView.getByEmail(email).then((user) => user.email);

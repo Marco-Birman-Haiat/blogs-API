@@ -1,6 +1,6 @@
 const { validateCategoryIds } = require('./categoryValidations');
 const { createBlogPostSchema, updateBlogPostSchema } = require('./schemas');
-const { BlogPost, User } = require('../../models');
+const { BlogPost, User } = require('../../database/models');
 
 const postCreateValidation = async (post) => {
   const { title, content, categoryIds } = post;
